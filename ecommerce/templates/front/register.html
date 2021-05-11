@@ -1,0 +1,47 @@
+{%  extends 'base/base.html' %}
+
+{%  block content %}
+
+      <div class="row">
+        <div class="col-md-7 col-xs-12">
+        </div>
+        <div class="col-md-5 col-xs-12">
+          <div style="box-shadow: 10px 10px 10px #aaa; padding:50px;border:1px solid #aaa">
+          <h1> Register User </h1>
+
+          <form method="post">
+             {% csrf_token %}
+
+          {{ form }}
+          <br>
+          <button type="submit" class="btn btn-warning btn-large " style="float:right;">Register</button>
+
+
+        </form>
+      </div>
+
+
+<!--h1> Contact Form using Html tags</h1>
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="col-md-6">
+            <input class="form-control" type="text" name="name" placeholder="Enter your full name" required="required">
+
+
+            <input class="form-control" type="email" name="email" placeholder="Enter your email address" required="required">
+
+            <textarea class="form-control" required="required" name="message" placeholder="Enter your message"></textarea>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+          </div>
+          </form-->
+
+
+        </div>
+
+      </div>
+
+
+
+{% endblock %}

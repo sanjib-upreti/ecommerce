@@ -1,0 +1,84 @@
+{% url 'cart:home' as cart_url %}
+<div class="container-fluid">
+     <div class="row">
+         <div class="col-md-12">
+
+<nav class="navbar navbar-expand-lg navbar-light " style="background:#ffeb4e">
+  <a class="navbar-brand" href="../">IITS</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarSupportedContent">
+    <ul class="navbar-nav mr-auto">
+
+          <li class="nav-item active">
+        <a class="nav-link" href="{% url 'front:home' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+
+         <li class="nav-item active">
+        <a class="nav-link" href="{% url 'front:about' %}">About <span class="sr-only">(current)</span></a>
+      </li>
+         <li class="nav-item active">
+        <a class="nav-link" href="{% url 'front:contact' %}">Contact <span class="sr-only">(current)</span></a>
+      </li>
+        <li class="nav-item active">
+        <a class="nav-link" href="../productpage">Products <span class="sr-only">(current)</span></a>
+      </li>
+      {% if 'username' not in request.session %}
+      <li class="nav-item active">
+        <a class="nav-link" href="{% url 'accounts:loginuser' %}"><span class="glyphicon glyphicon-user"></span>Login <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'accounts:registeruser' %}">Register</a>
+      </li>
+      {% endif %}
+        </li>
+        <li class="nav-item active">
+            <a class="nav-link" href="{{ cart_url }}"><span style="margin-top: -10;font-size:8px" class="badge badge-danger">{{ request.session.cart_items }}</span><i class="fa fa-shopping-cart fa-2x"></i> <span class="sr-only">(current)</span></a>
+      </li>
+
+     {% if 'username' in request.session %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ request.session.username }}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+          <a class="dropdown-item" href="#">View profile</a>
+          <a class="dropdown-item" href="{% url 'accounts:orderhistory' %}">Order History</a>
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'accounts:logout' %}">Log Out</a>
+        </div>
+      </li>
+      {% endif %}
+      {% if 'guest_email' in request.session %}
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{ request.session.guest_email }}
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+
+          <div class="dropdown-divider"></div>
+          <a class="dropdown-item" href="{% url 'accounts:logout' %}">Log Out Guest</a>
+        </div>
+      </li>
+      {% endif %}
+
+
+
+
+
+
+    </ul>
+    <form class="form my-2 my-lg-0 search-form" action="{% url 'search:search' %}">
+        <div class="input-group">
+      <input class="form-control " type="search" placeholder="Search" aria-label="Search" name="search" value="{{ request.GET.search}}">
+        <span class="input-group-btn">
+      <button class="btn btn-outline-success my-2 my-sm-0" type="submit" style="background:#10377d;">Search</button>
+        </span>
+        </div>
+    </form>
+  </div>
+</nav>
+     </div>
+ </div>

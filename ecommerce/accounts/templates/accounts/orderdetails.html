@@ -1,0 +1,37 @@
+{% extends "base/base.html" %}
+
+
+{% block content %}
+
+
+<div class='row'>
+    <div class='col-12'>
+        <h1>Orders</h1>
+    </div>
+</div>
+<div class='row'>
+    <div class='col'>
+        <table class='table'>
+            <thead><th>Product</th><th>Description</th><th>Cost</th></thead>
+
+            <tbody>
+                {% for product in cartproducts.products.all %}
+    <tr class='cart-product'>
+
+        <td><a href="/productdetails/{{product.id}}"><img src="{{ product.image.url }}" width="100px" height="100px;"></a>
+
+
+      </td>
+        <td>{{ product.title }}</td>
+        <td>{{ product.price }}</td>
+    </tr>
+    {% endfor %}
+            </tbody>
+
+        </table>
+    </div>
+</div>
+
+
+
+{% endblock %}

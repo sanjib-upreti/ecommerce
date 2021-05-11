@@ -1,0 +1,52 @@
+{% extends 'base/base.html' %}
+{% block content %}
+
+
+<h4>My Shopping Bag</h4>
+
+{% if cart.products.exists %}
+<div class="row">
+    <div class="col-md-6">
+<table class="table cart-table">
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>Product Name</th>
+      <th>Product Price</th>
+    </tr>
+  </thead>
+  <tbody class='cart-body'>
+    {% for product in cart.products.all %}
+    <tr class='cart-product'>
+      <th scope="row">{{ forloop.counter }}</th>
+      <td><a href=''>{{ product.title }}</a>
+          <img src="{{ product.image.url }}" width="50px" height="50px;">
+        {% include 'cart/remove-product.html' with product_id=product.id %}
+      </td>
+      <td>{{ product.price }}</td>
+    </tr>
+    {% endfor %}
+    <tr>
+      <td colspan="2"></td>
+      <td><b>Subtotal</b> &#8377; <span class='cart-subtotal'>{{ cart.subtotal }}</span></td>
+    </tr>
+    <tr>
+      <td colspan="2"></td>
+      <td><b>Total</b> &#8377; <span class='cart-total'>{{ cart.total }}</span></td>
+    </tr>
+
+   <tr>
+      <td colspan="2"></td>
+      <td><a class="btn btn-success" href="{%  url 'cart:checkout' %}">Check Out</a> </td>
+    </tr>
+
+
+  </tbody>
+</table>
+{% else %}
+<p class='lead'>Cart is empty</p>
+{% endif %}
+    </div>
+</div>
+
+{%  endblock %}

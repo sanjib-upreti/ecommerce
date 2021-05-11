@@ -1,0 +1,131 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+<div class="row">
+        <div class="col-md-12">
+          <h1> Product Details </h1>
+        </div>
+      </div>
+
+      <div class="row">
+
+
+        <div class="col-md-4 col-xs-12">
+
+          <img src="{{product.image.url}}" width="100%">
+
+
+        </div>
+        <div class="col-md-4 col-xs-12">
+
+
+            {{ product.title}}
+          <br>
+            {{ product.description}}
+          <br>
+            {{ product.price}}
+          <br>
+           <br>
+           Size S :  {{ product.qtysizeS}} Available
+          <br>
+           <br>
+           Size M:  {{ product.qtysizeM}} Available
+          <br>
+           <br>
+            Size L : {{ product.qtysizeL}} Available
+          <br>
+          Size XL : {{ product.qtysizeXL }} Available
+          <br>
+
+        {% include 'product/update-cart.html' with product=product cart=cart %}
+
+
+
+
+
+
+
+
+
+<!--h1> Contact Form using Html tags</h1>
+
+          <form method="post">
+            {% csrf_token %}
+            <div class="col-md-6">
+            <input class="form-control" type="text" name="name" placeholder="Enter your full name" required="required">
+
+
+            <input class="form-control" type="email" name="email" placeholder="Enter your email address" required="required">
+
+            <textarea class="form-control" required="required" name="message" placeholder="Enter your message"></textarea>
+
+            <button type="submit" class="btn btn-success">Submit</button>
+          </div>
+          </form-->
+
+
+        </div>
+        <div class="col-md-4">
+            {{ message }}
+           <form method="POST">
+               {% csrf_token %}
+               {{ form }}
+               <br>
+               <input type="submit" value="Submit" class="btn btn-primary"/>
+           </form>
+
+
+
+        </div>
+
+      </div>
+
+<div class="row">
+    <div class="col-md-8">
+        <hr>
+        <h3> Product Reviews</h3>
+        <div style="border:1px solid #aaa"></div>
+        {% for review in reviews%}
+
+        <blockquote class="blockquote text-right">
+  <p class="mb-0">{{ review.description}}.</p>
+  <footer class="blockquote-footer"> <cite title="{{ review.reviewby}}">{{ review.reviewby}}</cite></footer>
+</blockquote>
+
+
+
+        {% endfor %}
+
+
+
+        <div class="pagination">
+    <span class="step-links">
+        {% if reviews.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ reviews.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ reviews.number }} of {{ reviews.paginator.num_pages }}.
+        </span>
+
+        {% if reviews.has_next %}
+            <a href="?page={{ reviews.next_page_number }}">next</a>
+            <a href="?page={{ reviews.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+
+
+</div>
+    </div>
+    </div>
+
+
+
+
+{% endblock %}
+
+
+
+
+

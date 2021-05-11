@@ -1,0 +1,212 @@
+{% extends 'base/base.html' %}
+{% block content %}
+
+
+
+
+
+{% if not billing_profile %}
+
+        <div class="row">
+            <div class="col-md-6">
+                <div style="box-shadow: 10px 10px 10px #aaa; padding:50px;border:1px solid #aaa">
+
+
+                  <h1> Login </h1>
+
+                  <form method="post" action="{% url 'accounts:loginuser' %}">
+                     {% csrf_token %}
+
+                  {{ form }}
+                  <br>
+                  <input type="hidden" name = "next" value="{{next_url }}" >
+                  <button type="submit" class="btn btn-warning btn-large " style="float:right;">Submit</button>
+
+
+                </form>
+
+              </div>
+
+            </div>
+
+
+             <div class="col-md-6">
+                        <h1> Continue As Guest </h1>
+
+                        <form method="post" action="{% url 'accounts:guest_register' %}">
+                         {% csrf_token %}
+
+                        {{ guest_form }}
+                        <br>
+
+                        <input type="hidden" name = "next" value="{{next_url }}" >
+                        <button type="submit" class="btn btn-warning btn-large " style="float:right;">Submit</button>
+
+
+                         </form>
+
+             </div>
+        </div>
+
+
+
+
+
+
+{% else %}
+        <div class="row">
+
+
+
+                {% if not object.shipping_address  %}
+                             <div class="col-md-6">
+
+                                 <p class="lead">Shipping Address</p>
+                                <form method="post" action="{% url 'address:checkout_address' %}">
+                                    {% csrf_token %}
+                                    {{ billing_address_form }}
+                                    <br>
+                                    {% if address_type %}
+                                         <input type="hidden" name = "address_type" value="{{ address_type }}" >
+                                    {% endif %}
+                                     <input type="hidden" name = "next" value="{{next_url }}" >
+                                    <button type="submit" class="btn btn-warning btn-large " style="float:right;">Submit</button>
+                                </form>
+                             </div>
+                            <div class="col-md-6">
+
+                                 {% if address_qs.exists %}
+                                <form method="post" action="{% url 'address:checkout_address_reuse' %}">
+                                    {% csrf_token %}
+                                            {% for address in address_qs %}
+                                               <label for='address-{{ address.id }}'>
+                                                    <input id='address-{{ address.id }}' type='radio' name='shipping_address' value='{{ address.id }}' />
+                                                {{ address.address_line_1 }}
+                                                </label><br/>
+
+                                             {% endfor %}
+                                    {% if next_url %}
+                                                <input type='hidden' name='next' value='{{ next_url }}' />
+                                          {% endif %}
+
+                                                <input type='hidden' name='address_type' value='shipping_address' />
+                                     <button type='submit' class='btn btn-success'>Use Address</button>
+                                </form>
+                                {% endif %}
+
+
+                            </div>
+        </div>
+                 {% elif not object.billing_address %}
+                             <div class="col-md-6">
+                             <form method="post" action="{% url 'address:checkout_address' %}">
+                                  <p class="lead">Billing Address</p>
+                                {% csrf_token %}
+                                {{ billing_address_form }}
+                                <br>
+                                {% if address_type %}
+                                 <input type="hidden" name = "address_type" value="billing" >
+                                {% endif %}
+                                 <input type="hidden" name = "next" value="{{next_url }}" >
+                                <button type="submit" class="btn btn-warning btn-large " style="float:right;">Submit</button>
+                            </form>
+                             </div>
+                            <div class="col-md-6">
+
+                                <form method="post" action="{% url 'address:checkout_address_reuse' %}">
+                                    {% csrf_token %}
+
+                                        {% for address in address_qs %}
+                                                <label for='address-{{ address.id }}'>
+                                                    <input id='address-{{ address.id }}' type='radio' name='shipping_address' value='{{ address.id }}' />
+                                                {{ address.address_line_1 }}
+                                                </label><br/>
+                                         {% endfor %}
+                                         {% if next_url %}
+                                                <input type='hidden' name='next' value='{{ next_url }}' />
+                                          {% endif %}
+
+                                                <input type='hidden' name='address_type' value='billing_address' />
+
+                                         <button type='submit' class='btn btn-success'>Use Address</button>
+                                </form>
+
+
+
+
+
+                             </div>
+        </div>
+
+
+
+                {% else %}
+                            {% if not has_card %}
+                            <form method="GET" action="/payment_method/">
+                                {% csrf_token %}
+                                <input type="hidden" name="next" value="{{ next_url }}">
+                             <button type="submit" class="btn btn-info"> Add New Card</button>
+                            </form>
+
+                            {% else %}
+
+                           <div class="col-md-6">
+                            <h3> Finalize Check Out </h3>
+
+                               <table class="table cart-table">
+                                  <thead>
+                                    <tr>
+                                      <th>#</th>
+                                      <th>Product Name</th>
+                                      <th>Product Price</th>
+                                    </tr>
+                                  </thead>
+                                  <tbody class='cart-body'>
+                                    {% for product in cart.products.all %}
+                                    <tr class='cart-product'>
+                                      <th scope="row">{{ forloop.counter }}</th>
+                                      <td><a href=''>{{ product.title }}</a>
+                                          <img src="{{ product.image.url }}" width="50px" height="50px;">
+                                        {% include 'cart/remove-product.html' with product_id=product.id %}
+                                      </td>
+                                      <td>{{ product.price }}</td>
+                                    </tr>
+                                    {% endfor %}
+
+
+
+                                  </tbody>
+                                </table>
+
+                            <p>Payment Method: {{ billing_profile.default_card }} (<a href="/payment_method/?next={{ next_url }}">Change / Add New Card </a>)</p>
+
+
+
+                            <p> Cart Total : {{ object.cart.total }}</p>
+
+                                   {% if object.cart.subtotal <= 1000 %}
+
+                                    <p> Shipping Total : {{ object.shipping_total }} <span style="color:grey;font-size:10px;"> (Shop for {{ object.cart.subtotal|add:"-1000" }} More for  Free shipping)</span></p>
+                                    {% else %}
+                                    <p>Shipping Total : {{ object.shipping_total }} </p>
+                                    {% endif %}
+
+                                <p> Order Total : {{ object.total }} </p>
+                            <form method="post" class="form" action="">
+                                {% csrf_token %}
+                            <button type="submit" class="btn btn-warning btn-large " >Confirm Checkout</button>
+                            </form>
+                          </div>
+                            {% endif %}
+
+
+                {% endif %}
+
+
+
+
+
+</div>
+{% endif %}
+
+{% endblock %}
